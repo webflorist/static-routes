@@ -1,0 +1,37 @@
+{
+    "name": "webflorist/static-routes",
+    "description": "Generate static/hybrid pages for Laravel-Routes",
+    "authors": [
+        {
+            "name": "Gerald Buttinger",
+            "email": "gerald@code.florist"
+        }
+    ],
+    "require": {
+		"laravel/framework": "~5.8",
+        "webflorist/routetree": "dev-develop"
+	},
+    "require-dev": {
+        "orchestra/testbench": "~3.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webflorist\\StaticRoutes\\": "src/",
+            "StaticRoutesTests\\": "tests/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../routetree",
+            "no-api": true
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webflorist\\StaticRoutes\\StaticRoutesServiceProvider"
+            ]
+        }
+    }
+}
