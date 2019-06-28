@@ -10,11 +10,12 @@ class HttpRequestCrawler extends TestCase
 {
     /**
      * HttpRequestCrawler constructor.
+     * @param Application $app
      */
-    public function __construct($app)
+    public function __construct(Application $app)
     {
-        parent::__construct();
         $this->app = $app;
+        parent::__construct();
     }
 
 

@@ -8,6 +8,7 @@
         }
     ],
     "require": {
+        "php": "~7.1",
 		"laravel/framework": "~5.8",
         "webflorist/routetree": "dev-develop"
 	},

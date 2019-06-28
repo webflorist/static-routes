@@ -3,8 +3,6 @@
 namespace Webflorist\StaticRoutes\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Foundation\Console\Kernel;
-use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Webflorist\StaticRoutes\Crawlers\HttpRequestCrawler;
 
@@ -37,9 +35,8 @@ class GenerateCommand extends Command
      */
     public function __construct()
     {
-
         parent::__construct();
-        $this->crawler = new HttpRequestCrawler(app()->make(Kernel::class)->bootstrap());
+        $this->crawler = new HttpRequestCrawler(app());
     }
 
     /**
@@ -50,18 +47,42 @@ class GenerateCommand extends Command
      */
     public function handle(Router $router)
     {
+        $outputBasePath = config('static-routes.output_path');
+
+        self::rrmdir($outputBasePath);
+
         foreach ($router->getRoutes()->getRoutesByMethod()['GET'] as $route) {
 
-            /** @var Route $route */
+            $outputFile = $outputBasePath . '/' . $route->uri . '.html';
+            $outputPath = substr($outputFile, 0, strrpos($outputFile, '/'));
 
-            dd(
-                $this->crawler->call(
-                    'GET',
-                    $route->uri()
-                )
-            );
-            dd($route->uri);
+            if (!file_exists($outputPath)) {
+                mkdir($outputPath, 0777, true);
+            }
 
+            $content = $this->crawler->call(
+                'GET',
+                $route->uri()
+            )->content();
+
+            file_put_contents($outputFile, $content);
+
+        }
+    }
+
+    static function rrmdir(string $dir) : void
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir . "/" . $object))
+                        self::rrmdir($dir . "/" . $object);
+                    else
+                        unlink($dir . "/" . $object);
+                }
+            }
+            rmdir($dir);
         }
     }
 }
