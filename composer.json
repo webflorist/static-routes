@@ -9,8 +9,7 @@
     ],
     "require": {
         "php": "~7.1",
-		"laravel/framework": "~5.8",
-        "webflorist/routetree": "dev-develop"
+		"laravel/framework": "~5.8"
 	},
     "require-dev": {
         "orchestra/testbench": "~3.8"
@@ -21,13 +20,6 @@
             "StaticRoutesTests\\": "tests/"
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../routetree",
-            "no-api": true
-        }
-    ],
     "extra": {
         "laravel": {
             "providers": [

@@ -2,9 +2,8 @@
 
 namespace StaticRoutesTests\Feature;
 
+use Illuminate\Routing\Router;
 use StaticRoutesTests\TestCase;
-use Webflorist\RouteTree\RouteAction;
-use Webflorist\RouteTree\RouteNode;
 
 class StaticRoutesGenerationTest extends TestCase
 {
@@ -12,32 +11,20 @@ class StaticRoutesGenerationTest extends TestCase
     public function test_static_routes_generation()
     {
 
+        /** @var Router $router */
+        $router = app(Router::class);
+
         $routes = [
-            'de' => 'root',
-            'en' => 'root',
-            'de/page' => 'page',
-            'en/page' => 'page'
+            '' => 'root',
+            'page' => 'page',
+            'page/subpage' => 'subpage'
         ];
 
-        route_tree()->setRootNode(
-            $rootNode = (new RouteNode())
-                ->addAction(
-                    (new RouteAction('get'))
-                        ->setClosure(function () {
-                            return "root";
-                        })
-                )
-        );
-
-        (new RouteNode('page', $rootNode))
-            ->addAction(
-                (new RouteAction('get'))
-                    ->setClosure(function () {
-                        return "page";
-                    })
-            );
-
-        route_tree()->generateAllRoutes();
+        foreach ($routes as $routeName => $routeContent) {
+            $router->get($routeName, function() use($routeContent) {
+                return $routeContent;
+            });
+        }
 
         $this->artisan('static-routes:generate');
 
@@ -45,7 +32,7 @@ class StaticRoutesGenerationTest extends TestCase
 
         foreach ($routes as $routeName => $routeContent) {
 
-            $outputFile = $outputBasePath . '/' . $routeName . '.html';
+            $outputFile = $outputBasePath . '/' . $routeName . '/index.html';
 
             $this->assertFileExists($outputFile);
 
@@ -55,7 +42,6 @@ class StaticRoutesGenerationTest extends TestCase
             );
 
         }
-
 
     }
 

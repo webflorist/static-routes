@@ -53,7 +53,7 @@ class GenerateCommand extends Command
 
         foreach ($router->getRoutes()->getRoutesByMethod()['GET'] as $route) {
 
-            $outputFile = $outputBasePath . '/' . $route->uri . '.html';
+            $outputFile = $outputBasePath . '/' . $route->uri . '/index.html';
             $outputPath = substr($outputFile, 0, strrpos($outputFile, '/'));
 
             if (!file_exists($outputPath)) {
