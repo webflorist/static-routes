@@ -58,34 +58,40 @@ class GenerateCommand extends Command
 
             $uri = $route->uri();
 
-            if (!$this->uriIsExcluded($uri)) {
-
-                /** @var Route $route */
-                $outputFile = "$outputBasePath/$uri/index.html";
-                $outputPath = substr($outputFile, 0, strrpos($outputFile, '/'));
-
-                if (!file_exists($outputPath)) {
-                    mkdir($outputPath, 0777, true);
-                }
-
-                $response = $this->crawler->get(
-                    $uri
-                );
-
-                if (!is_null($response->exception)) {
-                    $exceptionInfo = get_class($response->exception).':'.$response->exception->getMessage();
-                    throw new RouteGenerationException("Route with URI '$uri' threw Exception:'$exceptionInfo'");
-                }
-
-                if ($response->isRedirection()) {
-                    $redirectTarget = $response->baseResponse->headers->get('Location');
-                    // TODO: Handle redirections.
-                }
-
-                file_put_contents($outputFile, $response->content());
+            if ($this->uriIsExcluded($uri)) {
+                $this->line("$uri: excluded via config.");
+                break;
             }
 
+            /** @var Route $route */
+            $outputFile = "$outputBasePath/$uri/index.html";
+            $outputPath = substr($outputFile, 0, strrpos($outputFile, '/'));
+
+            if (!file_exists($outputPath)) {
+                mkdir($outputPath, 0777, true);
+            }
+
+            $response = $this->crawler->get(
+                $uri
+            );
+
+            if (!is_null($response->exception)) {
+                $exceptionInfo = get_class($response->exception).':'.$response->exception->getMessage();
+                throw new RouteGenerationException("Route with URI '$uri' threw Exception:'$exceptionInfo'");
+            }
+
+            if ($response->isRedirection()) {
+                $redirectTarget = $response->baseResponse->headers->get('Location');
+                // TODO: Handle redirections.
+            }
+
+            file_put_contents($outputFile, $response->content());
+
+            $this->info("$uri: generated successfully.");
+
         }
+
+        $this->info("Static routes generation successfully completed.");
     }
 
     /**
