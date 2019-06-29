@@ -60,7 +60,7 @@ class GenerateCommand extends Command
 
             if ($this->uriIsExcluded($uri)) {
                 $this->line("$uri: excluded via config.");
-                break;
+                continue;
             }
 
             /** @var Route $route */
