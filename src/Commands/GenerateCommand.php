@@ -3,8 +3,10 @@
 namespace Webflorist\StaticRoutes\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Webflorist\StaticRoutes\Crawlers\HttpRequestCrawler;
+use Webflorist\StaticRoutes\Exceptions\RouteGenerationException;
 
 class GenerateCommand extends Command
 {
@@ -53,19 +55,31 @@ class GenerateCommand extends Command
 
         foreach ($router->getRoutes()->getRoutesByMethod()['GET'] as $route) {
 
-            $outputFile = $outputBasePath . '/' . $route->uri . '/index.html';
+            $uri = $route->uri();
+
+            /** @var Route $route */
+            $outputFile = "$outputBasePath/$uri/index.html";
             $outputPath = substr($outputFile, 0, strrpos($outputFile, '/'));
 
             if (!file_exists($outputPath)) {
                 mkdir($outputPath, 0777, true);
             }
 
-            $content = $this->crawler->call(
-                'GET',
-                $route->uri()
-            )->content();
+            $response = $this->crawler->get(
+                $uri
+            );
 
-            file_put_contents($outputFile, $content);
+            if (!is_null($response->exception)) {
+                $exceptionInfo = get_class($response->exception).':'.$response->exception->getMessage();
+                throw new RouteGenerationException("Route with URI '$uri' threw Exception:'$exceptionInfo'");
+            }
+
+            if ($response->isRedirection()) {
+                $redirectTarget = $response->baseResponse->headers->get('Location');
+                // TODO: Handle redirections.
+            }
+
+            file_put_contents($outputFile, $response->content());
 
         }
     }

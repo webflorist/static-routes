@@ -4,15 +4,13 @@ namespace StaticRoutesTests\Feature;
 
 use Illuminate\Routing\Router;
 use StaticRoutesTests\TestCase;
+use Webflorist\StaticRoutes\Exceptions\RouteGenerationException;
 
 class StaticRoutesGenerationTest extends TestCase
 {
 
     public function test_static_routes_generation()
     {
-
-        /** @var Router $router */
-        $router = app(Router::class);
 
         $routes = [
             '' => 'root',
@@ -21,7 +19,7 @@ class StaticRoutesGenerationTest extends TestCase
         ];
 
         foreach ($routes as $routeName => $routeContent) {
-            $router->get($routeName, function() use($routeContent) {
+            $this->router->get($routeName, function() use($routeContent) {
                 return $routeContent;
             });
         }
@@ -42,6 +40,20 @@ class StaticRoutesGenerationTest extends TestCase
             );
 
         }
+
+    }
+
+    public function test_route_with_exception()
+    {
+        $this->expectException(RouteGenerationException::class);
+        $this->expectExceptionMessage("Route with URI 'exception' threw Exception:'ErrorException:Undefined variable: undefinedVarialbe'");
+
+        $this->router->get('exception', function() {
+            return $undefinedVarialbe;
+        });
+
+        $this->artisan('static-routes:generate');
+
 
     }
 

@@ -2,6 +2,7 @@
 
 namespace StaticRoutesTests;
 
+use Illuminate\Routing\Router;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use Webflorist\StaticRoutes\StaticRoutesServiceProvider;
 
@@ -12,6 +13,11 @@ use Webflorist\StaticRoutes\StaticRoutesServiceProvider;
 class TestCase extends BaseTestCase
 {
 
+    /**
+     * @var Router
+     */
+    protected $router;
+
     protected function getPackageProviders($app)
     {
         return [
@@ -21,7 +27,7 @@ class TestCase extends BaseTestCase
 
     protected function getEnvironmentSetUp($app)
     {
-
+        $this->router = $app[Router::class];
     }
 
 

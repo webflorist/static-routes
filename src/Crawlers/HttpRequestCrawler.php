@@ -3,7 +3,6 @@
 namespace Webflorist\StaticRoutes\Crawlers;
 
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Console\Kernel;
 use Illuminate\Foundation\Testing\TestCase;
 
 class HttpRequestCrawler extends TestCase
@@ -18,7 +17,6 @@ class HttpRequestCrawler extends TestCase
         parent::__construct();
     }
 
-
     /**
      * Creates the application.
      *
@@ -28,5 +26,6 @@ class HttpRequestCrawler extends TestCase
     {
         return $this->app;
     }
+
 
 }
