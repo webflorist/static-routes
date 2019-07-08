@@ -8,6 +8,8 @@ return [
     |--------------------------------------------------------------------------
     |
     | Set the output path for generated static routes.
+    | Be sure to configure your web server to look here
+    | first before looking in the public folder.
     |
     */
     'output_path' => storage_path('static_routes'),
