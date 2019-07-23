@@ -50,6 +50,13 @@ class GenerateCommand extends Command
      */
     public function handle(Router $router)
     {
+        // Set environment to production.
+        $this->crawler->setAppEnvironment('production');
+
+        // Set a pseudo-config key to let application know,
+        // a static generation is happening.
+        config()->set('static-routes.is_generating', true);
+
         $outputBasePath = config('static-routes.output_path');
 
         self::rrmdir($outputBasePath);
