@@ -18,15 +18,6 @@ class HttpRequestCrawler extends TestCase
     }
 
     /**
-     * Set environment of $this->app.
-     *
-     * @param string $environment
-     */
-    public function setAppEnvironment(string $environment) {
-        $this->app['env'] = $environment;
-    }
-
-    /**
      * Creates the application.
      *
      * @return Application

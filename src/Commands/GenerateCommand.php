@@ -26,11 +26,6 @@ class GenerateCommand extends Command
     protected $description = 'Generates static routes.';
 
     /**
-     * @var HttpRequestCrawler
-     */
-    private $crawler;
-
-    /**
      * Create a new command instance.
      *
      * @param HttpRequestCrawler $crawler
@@ -38,7 +33,6 @@ class GenerateCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->crawler = new HttpRequestCrawler(app());
     }
 
     /**
@@ -51,7 +45,13 @@ class GenerateCommand extends Command
     public function handle(Router $router)
     {
         // Set environment to production.
-        $this->crawler->setAppEnvironment('production');
+        config()->set('app.env', 'production');
+        app()['env'] = 'production';
+
+        // Set debug to false
+        config()->set('app.debug', false);
+
+        $crawler = new HttpRequestCrawler(app());
 
         // Set a pseudo-config key to let application know,
         // a static generation is happening.
@@ -78,7 +78,7 @@ class GenerateCommand extends Command
                 mkdir($outputPath, 0777, true);
             }
 
-            $response = $this->crawler->get(
+            $response = $crawler->get(
                 $uri
             );
 

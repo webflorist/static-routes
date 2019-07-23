@@ -42,6 +42,29 @@ class StaticRoutesGenerationTest extends TestCase
 
     }
 
+    public function test_static_routes_generation_environment()
+    {
+
+
+        $this->router->get('envcheck', function () {
+            return app()->environment();
+        });
+
+        $this->artisan('static-routes:generate');
+
+        $outputBasePath = config('static-routes.output_path');
+
+        $outputFile = $outputBasePath . '/envcheck/index.html';
+
+        $this->assertFileExists($outputFile);
+
+        $this->assertEquals(
+            'production',
+            file_get_contents($outputFile)
+        );
+
+    }
+
     public function test_route_with_exception()
     {
         $this->expectException(RouteGenerationException::class);
