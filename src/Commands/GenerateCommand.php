@@ -88,8 +88,10 @@ class GenerateCommand extends Command
             }
 
             if ($response->isRedirection()) {
+	        // TODO: Handle redirections.
                 $redirectTarget = $response->baseResponse->headers->get('Location');
-                // TODO: Handle redirections.
+                $this->line("$uri: excluded due to redirection.");
+                continue;
             }
 
             file_put_contents($outputFile, $response->content());
