@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Artisan;
 use Webflorist\FormFactory\FormFactory;
 use Webflorist\StaticRoutes\Crawlers\HttpRequestCrawler;
 use Webflorist\StaticRoutes\Exceptions\RouteGenerationException;
@@ -27,12 +28,12 @@ class GenerateCommand extends Command
      * @var string
      */
     protected $description = 'Generates static routes.';
-    
+
     /**
      * @var Router
      */
     private $router;
-    
+
     /**
      * @var Request
      */
@@ -73,7 +74,7 @@ class GenerateCommand extends Command
 
         $outputBasePath = config('static-routes.output_path');
 
-        self::rrmdir($outputBasePath);
+        Artisan::call('static-routes:clear');
 
         foreach ($this->router->getRoutes()->getRoutesByMethod()['GET'] as $route) {
             /** @var Route $route */
@@ -108,27 +109,6 @@ class GenerateCommand extends Command
         }
 
         $this->info("Static routes generation successfully completed.");
-    }
-
-    /**
-     * Recursively remove a directory.
-     *
-     * @param string $dir
-     */
-    static function rrmdir(string $dir) : void
-    {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != "." && $object != "..") {
-                    if (is_dir($dir . "/" . $object))
-                        self::rrmdir($dir . "/" . $object);
-                    else
-                        unlink($dir . "/" . $object);
-                }
-            }
-            rmdir($dir);
-        }
     }
 
     /**

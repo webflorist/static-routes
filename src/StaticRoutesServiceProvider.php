@@ -3,6 +3,7 @@
 namespace Webflorist\StaticRoutes;
 
 use Illuminate\Support\ServiceProvider;
+use Webflorist\StaticRoutes\Commands\ClearCommand;
 use Webflorist\StaticRoutes\Commands\GenerateCommand;
 
 class StaticRoutesServiceProvider extends ServiceProvider
@@ -40,7 +41,8 @@ class StaticRoutesServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->commands([
-                GenerateCommand::class
+                GenerateCommand::class,
+                ClearCommand::class
             ]);
         }
     }
