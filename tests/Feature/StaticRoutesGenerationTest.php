@@ -68,7 +68,7 @@ class StaticRoutesGenerationTest extends TestCase
     public function test_route_with_exception()
     {
         $this->expectException(RouteGenerationException::class);
-        $this->expectExceptionMessage("Route with URI 'exception' threw Exception:'ErrorException:Undefined variable: undefinedVarialbe'");
+        $this->expectExceptionMessage("Route with URI 'exception' threw Exception:'ErrorException:Undefined variable");
 
         $this->router->get('exception', function () {
             return $undefinedVarialbe;
@@ -102,7 +102,7 @@ class StaticRoutesGenerationTest extends TestCase
 
             if ($routeContent == 'excludeme') {
 
-                $this->assertFileNotExists($outputFile);
+                $this->assertFileDoesNotExist($outputFile);
 
             } else {
 
